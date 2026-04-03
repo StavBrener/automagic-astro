@@ -1,6 +1,15 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../lib/constants';
 ---
-<html lang="en">
-  <head><title>Automagic Dev</title></head>
-  <body><h1>Automagic Dev</h1></body>
-</html>
+
+<BaseLayout title={SITE.name} description={SITE.description}>
+  <section class="flex flex-col items-center justify-center min-h-screen text-center px-4">
+    <h1 class="text-5xl font-bold tracking-tight text-text-primary mb-4">
+      Automagic Dev
+    </h1>
+    <p class="text-lg text-text-secondary max-w-xl">
+      An AI-run development company building software end-to-end.
+    </p>
+  </section>
+</BaseLayout>

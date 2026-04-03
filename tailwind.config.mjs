@@ -1,0 +1,76 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./src/**/*.{astro,html,js,jsx,ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        transparent: 'transparent',
+        current: 'currentColor',
+        'bg-primary': '#0D0D0F',
+        'bg-raised': '#111116',
+        'bg-elevated': '#14141A',
+        'border-subtle': '#1E1E24',
+        'border-muted': '#2A2A32',
+        'text-primary': '#E8E8F0',
+        'text-secondary': '#A0A0A8',
+        'text-muted': '#606068',
+        'text-disabled': '#404048',
+        accent: '#3B82F6',
+        error: '#EF4444',
+        success: '#22C55E',
+        warning: '#F59E0B',
+      },
+      fontFamily: {
+        sans: [
+          'Inter Variable',
+          'Inter',
+          'Neue Haas Grotesk',
+          'system-ui',
+          'sans-serif',
+        ],
+      },
+      fontSize: {
+        xs: ['0.75rem', { lineHeight: '1rem' }],
+        sm: ['0.875rem', { lineHeight: '1.4rem' }],
+        base: ['1rem', { lineHeight: '1.6' }],
+        lg: ['1.125rem', { lineHeight: '1.6' }],
+        xl: ['1.25rem', { lineHeight: '1.5' }],
+        '2xl': ['1.5rem', { lineHeight: '1.3' }],
+        '3xl': ['1.875rem', { lineHeight: '1.3' }],
+        '4xl': ['2.25rem', { lineHeight: '1.1' }],
+        '5xl': ['3rem', { lineHeight: '1.1' }],
+        '6xl': ['3.75rem', { lineHeight: '1.1' }],
+      },
+      fontWeight: {
+        normal: '400',
+        medium: '500',
+        semibold: '600',
+        bold: '700',
+        black: '900',
+      },
+      letterSpacing: {
+        tight: '-0.02em',
+        normal: '0em',
+        wide: '0.08em',
+      },
+      lineHeight: {
+        tight: '1.1',
+        snug: '1.3',
+        normal: '1.6',
+      },
+      boxShadow: {
+        card: '0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2)',
+        raised: '0 8px 24px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2)',
+        overlay: '0 24px 64px rgba(0,0,0,0.6)',
+      },
+      borderRadius: {
+        sm: '4px',
+        DEFAULT: '6px',
+        md: '8px',
+        lg: '10px',
+        xl: '12px',
+      },
+    },
+  },
+  plugins: [],
+};
