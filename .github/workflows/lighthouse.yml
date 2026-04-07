@@ -2,11 +2,6 @@ name: Lighthouse Audit
 
 on:
   workflow_dispatch:
-    inputs:
-      url:
-        description: 'URL to audit'
-        required: true
-        default: 'https://automagic-dev.netlify.app'
 
 jobs:
   lighthouse:
@@ -20,44 +15,52 @@ jobs:
         with:
           node-version: 22
 
-      - name: Run Lighthouse CI
+      - name: Install lighthouse
+        run: npm install -g lighthouse
+
+      - name: Run Lighthouse on Homepage
         run: |
-          npm install -g @lhci/cli lighthouse
-          lhci collect \
-            --url="${{ github.event.inputs.url }}" \
-            --url="${{ github.event.inputs.url }}/about" \
-            --url="${{ github.event.inputs.url }}/contact" \
-            --url="${{ github.event.inputs.url }}/how-we-work" \
-            --url="${{ github.event.inputs.url }}/agents" \
-            --settings.preset=desktop \
-            --numberOfRuns=1 \
+          lighthouse https://automagic-dev.netlify.app \
+            --output=json \
+            --output-path=./lhr-home.json \
+            --chrome-flags="--headless --no-sandbox --disable-gpu" \
+            --only-categories=performance,accessibility,best-practices,seo \
             || true
+
+      - name: Run Lighthouse on About
+        run: |
+          lighthouse https://automagic-dev.netlify.app/about \
+            --output=json \
+            --output-path=./lhr-about.json \
+            --chrome-flags="--headless --no-sandbox --disable-gpu" \
+            --only-categories=performance,accessibility,best-practices,seo \
+            || true
+
+      - name: Print Scores
+        if: always()
+        run: |
+          echo "=== Lighthouse Scores ==="
+          for f in lhr-*.json; do
+            if [ -f "$f" ]; then
+              python3 -c "
+import json
+data = json.load(open('$f'))
+cats = data.get('categories', {})
+url = data.get('finalUrl', data.get('requestedUrl', '$f'))
+print('URL:', url)
+print('Performance:', round((cats.get('performance', {}).get('score', 0) or 0) * 100))
+print('Accessibility:', round((cats.get('accessibility', {}).get('score', 0) or 0) * 100))
+print('Best Practices:', round((cats.get('best-practices', {}).get('score', 0) or 0) * 100))
+print('SEO:', round((cats.get('seo', {}).get('score', 0) or 0) * 100))
+print()
+"
+            fi
+          done
 
       - name: Upload Lighthouse results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: lighthouse-results
-          path: .lighthouseci/
+          path: lhr-*.json
           retention-days: 7
-
-      - name: Print Lighthouse Scores
-        if: always()
-        run: |
-          echo "=== Lighthouse Scores ==="
-          for f in .lighthouseci/lhr-*.json; do
-            if [ -f "$f" ]; then
-              python3 -c "
-import sys, json
-data = json.load(open('$f'))
-cats = data.get('categories', {})
-if cats:
-  print('URL:', data.get('finalUrl', data.get('requestedUrl', '?')))
-  print('Performance:', round((cats.get('performance', {}).get('score', 0) or 0) * 100))
-  print('Accessibility:', round((cats.get('accessibility', {}).get('score', 0) or 0) * 100))
-  print('Best Practices:', round((cats.get('best-practices', {}).get('score', 0) or 0) * 100))
-  print('SEO:', round((cats.get('seo', {}).get('score', 0) or 0) * 100))
-  print()
-"
-            fi
-          done
